@@ -4,17 +4,26 @@ using UnityEngine;
 
 public class MovePlayer : MonoBehaviour
 {
-    public float PlayerSpeed = 2f; //declaram variabila care apare in inspectorda
+    public float PlayerSpeed = 2f; //declaram variabila care apare in inspector
     public bool doNormalize = false;
     public float rotationSpeed = 4f;
+    public float jumpPower = 4f; // puterea sariturii
+    public float groundedTreshold = 0.1f;
+    public float minY = -20f;
     public Transform cameraTransform;
     Rigidbody rigidbody;
     Vector3 moveDir;
+    Animator animator;
+    CapsuleCollider capsule;
+
+    Vector3 initialPos;
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>(); // ia valoarea corpului rigid atasat playerului
-
+        rigidbody = GetComponent<Rigidbody>(); // initializam corpul rigid atasat playerului
+        capsule = GetComponent<CapsuleCollider>();
+        animator = GetComponent<Animator>(); // initializam animatorul atasat playerului
+        initialPos = transform.position;
     }
 
     // Update is called once per frame
@@ -22,15 +31,79 @@ public class MovePlayer : MonoBehaviour
     {
         GetMovementDirection();
 
+        UpdateAnimatorParameters();
+
         ApplyRootMotion();
 
         ApplyRootRotation();
-       // ApplyRootRotation2();
+        // ApplyRootRotation2();
+
+        HandleMidair();
+
+        HandleAttack();
+
+        ApplySpeed();
     }
 
 
+    private void HandleAttack()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            animator.SetTrigger("Attack");
+        }
+        
+    }
+    private void HandleMidair()
+    {
+        bool midair = true;
+        for (float xOffset = -1; xOffset <= 1f; xOffset += 1f)
+        {
+            for (float zOffset = -1; zOffset <= 1f; zOffset += 1f)
+            {
+
+                Vector3 offset = new Vector3(xOffset, 0, zOffset).normalized * capsule.radius;
+                Ray ray = new Ray(transform.position + Vector3.up * groundedTreshold + offset, Vector3.down);
+                if (Physics.Raycast(ray, 2 * groundedTreshold))
+                {
+                    midair = false;
+                    break;
+                }
+            }
+        }
+
+        if (midair)
+        { animator.SetBool("Midair", true);
+        }
+        else
+        { 
+            animator.SetBool("Midair", false);
+            if (Input.GetButtonDown("Jump"))
+            {
+                Vector3 jumpForce = (Vector3.up + moveDir) * jumpPower;
+                rigidbody.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+            }
+        }
+       
+        if (transform.position.y < minY)
+        {
+            transform.position = initialPos;
+        }
+    }
+    private void UpdateAnimatorParameters()
+    {
+        Vector3 characterSpaceDir = transform.InverseTransformDirection(moveDir);
+        animator.SetFloat("Forward", characterSpaceDir.z, 0.1f, Time.deltaTime);
+        animator.SetFloat("Right", characterSpaceDir.x, 0.1f, Time.deltaTime);
+
+    }
     private void ApplyRootRotation()
     {
+        var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if(animator.GetBool("Midair") || stateInfo.IsTag("attack"))
+             return;
+        
+        
         Vector3 F = transform.forward;
         Vector3 D = moveDir;
         Vector3 FminusD = F - D;
@@ -58,11 +131,60 @@ public class MovePlayer : MonoBehaviour
 
     private void ApplyRootMotion()
     {
-        //Vector3 offset = dir * Time.deltaTime * PlayerSpeed;
-        //transform.position += offset; // recalculeaza pozitia la fiecare frame;
+       
+       // var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        //if (animator.GetBool("Midair") || stateInfo.IsTag("attack"))
+          //      return;
+
+
+        ApplySpeed();
+
+        if (animator.GetBool("Midair") )
+
+        {
+            animator.applyRootMotion = false;
+            return;
+        }
+        else
+        {
+            animator.applyRootMotion = true;
+        }
+
         float velY = rigidbody.velocity.y;
-        rigidbody.velocity = moveDir * PlayerSpeed;
+        rigidbody.velocity += animator.deltaPosition / Time.deltaTime;
+
+
         rigidbody.velocity = new Vector3(rigidbody.velocity.x, velY, rigidbody.velocity.z); // se pastreaza componenta verticala;
+
+
+
+    }
+
+    private void ApplySpeed()
+    {
+        //if (animator.GetBool("Running"))
+        //{
+          //  animator.applyRootMotion = false;
+            //return;
+        //}
+        //else
+        //{
+          //  animator.applyRootMotion = true;
+        //}
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            animator.SetTrigger("Running");
+            Vector3 offset = moveDir * Time.deltaTime * PlayerSpeed * 2f;
+            transform.position += offset; // recalculeaza pozitia la fiecare frame;
+        }
+        else
+        {
+
+            Vector3 offset = moveDir * Time.deltaTime * PlayerSpeed;
+            transform.position += offset; // recalculeaza pozitia la fiecare frame;
+
+        }
     }
 
     private void GetMovementDirection()
@@ -72,8 +194,11 @@ public class MovePlayer : MonoBehaviour
 
         moveDir = h * cameraTransform.right + v * cameraTransform.forward; // directia relativ la camera
         moveDir.y = 0f;  //componenta y=0 >> playerul se deplaseaza doar in plan orizontal;
+
+        
         if (doNormalize)
             moveDir = moveDir.normalized;
         
+
     }
 }
