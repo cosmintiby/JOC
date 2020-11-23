@@ -6,6 +6,8 @@ public class Destructibles : MonoBehaviour
 {
     public GameObject destroyedversion;
     public string box;
+    public AudioSource audio;
+    public ParticleSystem particle;
     private void OnTriggerEnter(Collider other)
     {
     
@@ -15,6 +17,8 @@ public class Destructibles : MonoBehaviour
           {
             Instantiate(destroyedversion, transform.position, transform.rotation);
             Destroy(gameObject);
+            audio.Play();
+            Instantiate(particle, transform.position, transform.rotation);
           }
         
     }

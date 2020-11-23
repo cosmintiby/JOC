@@ -6,6 +6,8 @@ public class AttackBhvr : StateMachineBehaviour
 {
     public HumanBodyBones bone;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+    public float minT;
+    public float maxT;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetLayerWeight(1, 0);
@@ -15,7 +17,7 @@ public class AttackBhvr : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         float t = stateInfo.normalizedTime;
-        if (t > 0.035f && t < 0.2f)
+        if (t > minT && t < maxT)
         {
             animator.GetBoneTransform(bone).GetComponent<SphereCollider>().enabled = true;
         }

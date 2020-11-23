@@ -14,13 +14,13 @@ public class MovePlayer : MonoBehaviour
     Rigidbody rigidbody;
     Vector3 moveDir;
     Animator animator;
+    AnimatorStateInfo stateInfo;
     CapsuleCollider capsule;
     Vector3 initialPos;
 
     Transform enemy;
     public Transform enemyContainer;
     List<Transform> enemies;
-    AnimatorStateInfo stateInfo;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,7 +56,7 @@ public class MovePlayer : MonoBehaviour
 
     private void Respawn()
     {
-       
+        
         if (stateInfo.IsName("Die"))
             transform.position = initialPos;
            
