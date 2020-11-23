@@ -24,10 +24,10 @@ public class MovePlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         rigidbody = GetComponent<Rigidbody>(); // initializam corpul rigid atasat playerului
         capsule = GetComponent<CapsuleCollider>();
         animator = GetComponent<Animator>(); // initializam animatorul atasat playerului
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         initialPos = transform.position;
         enemies = new List<Transform>();
         for (int i = 0; i < enemyContainer.childCount; i++)
@@ -64,21 +64,21 @@ public class MovePlayer : MonoBehaviour
 
     private void HandleAttack()
     {
-       if (stateInfo.IsName("Grounded"))
-        {
-            if (enemy != null)
-            {
-                float dist = Vector3.Distance(enemy.position, transform.position);
-                float guardWeight = 1f - (Mathf.Clamp(dist, 2f, 4f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
-                animator.SetLayerWeight(1, guardWeight);
-            }
-            else
-                animator.SetLayerWeight(1, 0f);
-        }
-        else
-        {
-            animator.SetLayerWeight(1, 0f);
-        }
+      // if (stateInfo.IsName("Grounded"))
+        //{
+          //  if (enemy != null)
+            //{
+              //  float dist = Vector3.Distance(enemy.position, transform.position);
+                //float guardWeight = 1f - (Mathf.Clamp(dist, 2f, 4f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
+                //animator.SetLayerWeight(1, guardWeight);
+            //}
+            //else
+       //         animator.SetLayerWeight(1, 0f);
+        //}
+        //else
+        //{
+          //  animator.SetLayerWeight(1, 0f);
+        //}
         
              
         if (Input.GetButtonDown("Fire1"))
