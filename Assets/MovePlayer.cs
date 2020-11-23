@@ -15,22 +15,30 @@ public class MovePlayer : MonoBehaviour
     Vector3 moveDir;
     Animator animator;
     CapsuleCollider capsule;
-
     Vector3 initialPos;
+
+    Transform enemy;
+    public Transform enemyContainer;
+    List<Transform> enemies;
+    AnimatorStateInfo stateInfo;
     // Start is called before the first frame update
     void Start()
     {
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         rigidbody = GetComponent<Rigidbody>(); // initializam corpul rigid atasat playerului
         capsule = GetComponent<CapsuleCollider>();
         animator = GetComponent<Animator>(); // initializam animatorul atasat playerului
         initialPos = transform.position;
+        enemies = new List<Transform>();
+        for (int i = 0; i < enemyContainer.childCount; i++)
+            enemies.Add(enemyContainer.GetChild(i));
     }
 
     // Update is called once per frame
     void Update()
     {
         GetMovementDirection();
-
+        
         UpdateAnimatorParameters();
 
         ApplyRootMotion();
@@ -43,11 +51,36 @@ public class MovePlayer : MonoBehaviour
         HandleAttack();
 
         ApplySpeed();
+        Respawn();
     }
 
+    private void Respawn()
+    {
+       
+        if (stateInfo.IsName("Die"))
+            transform.position = initialPos;
+           
+    }
 
     private void HandleAttack()
     {
+       if (stateInfo.IsName("Grounded"))
+        {
+            if (enemy != null)
+            {
+                float dist = Vector3.Distance(enemy.position, transform.position);
+                float guardWeight = 1f - (Mathf.Clamp(dist, 2f, 4f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
+                animator.SetLayerWeight(1, guardWeight);
+            }
+            else
+                animator.SetLayerWeight(1, 0f);
+        }
+        else
+        {
+            animator.SetLayerWeight(1, 0f);
+        }
+        
+             
         if (Input.GetButtonDown("Fire1"))
         {
             animator.SetTrigger("Attack");
@@ -99,13 +132,13 @@ public class MovePlayer : MonoBehaviour
     }
     private void ApplyRootRotation()
     {
-        var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if(animator.GetBool("Midair") || stateInfo.IsTag("attack"))
+        
+        if(animator.GetBool("Midair") || stateInfo.IsTag("attack") || stateInfo.IsTag("Die"))
              return;
         
         
         Vector3 F = transform.forward;
-        Vector3 D = moveDir;
+        Vector3 D = GetclosestEnemyDirection();
         Vector3 FminusD = F - D;
         Vector3 FplusD = F + D;
 
@@ -122,6 +155,34 @@ public class MovePlayer : MonoBehaviour
         {
             transform.rotation = Quaternion.AngleAxis(Time.deltaTime * rotationSpeed, Vector3.up) * transform.rotation;
         }
+    }
+    private Vector3 GetclosestEnemyDirection()
+    {
+        Vector3 D = moveDir;
+        float minDist = float.MaxValue;
+        int closestEnemyIndex = -1;
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            float dist = Vector3.Distance(transform.position, enemies[i].position);
+            if (dist < 2f && dist < minDist)
+            {
+                minDist = dist;
+                closestEnemyIndex = i;
+
+            }
+
+        }
+
+        if (closestEnemyIndex != -1)
+        {
+            enemy = enemies[closestEnemyIndex];
+            D = enemy.position - transform.position;
+            D.y = 0f;
+            D = D.normalized;
+        }
+        return D;
+
     }
     private void ApplyRootRotation2()
     {
@@ -151,7 +212,9 @@ public class MovePlayer : MonoBehaviour
         }
 
         float velY = rigidbody.velocity.y;
-        rigidbody.velocity += animator.deltaPosition / Time.deltaTime;
+
+        Vector3 fidelityDir = animator.deltaPosition.magnitude * moveDir.normalized;
+        rigidbody.velocity += fidelityDir  / Time.deltaTime;
 
 
         rigidbody.velocity = new Vector3(rigidbody.velocity.x, velY, rigidbody.velocity.z); // se pastreaza componenta verticala;
