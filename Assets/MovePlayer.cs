@@ -125,8 +125,8 @@ public class MovePlayer : MonoBehaviour
     private void UpdateAnimatorParameters()
     {
         Vector3 characterSpaceDir = transform.InverseTransformDirection(moveDir);
-       // if (Input.GetKey(KeyCode.LeftShift))
-         //   characterSpaceDir *= .5f;
+       if (Input.GetKey(KeyCode.LeftShift))
+           characterSpaceDir *= .5f;
         animator.SetFloat("Forward", characterSpaceDir.z, 0.1f, Time.deltaTime);
         animator.SetFloat("Right", characterSpaceDir.x, 0.1f, Time.deltaTime);
 
@@ -227,25 +227,16 @@ public class MovePlayer : MonoBehaviour
 
     private void ApplySpeed()
     {
-        //if (animator.GetBool("Running"))
-        //{
-          //  animator.applyRootMotion = false;
-            //return;
-        //}
-        //else
-        //{
-          //  animator.applyRootMotion = true;
-        //}
-
+     
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            animator.SetTrigger("Running");
+            animator.SetBool("Running", true);
             Vector3 offset = moveDir * Time.deltaTime * PlayerSpeed * 2f;
             transform.position += offset; // recalculeaza pozitia la fiecare frame;
         }
         else
         {
-
+            animator.SetBool("Running", false);
             Vector3 offset = moveDir * Time.deltaTime * PlayerSpeed;
             transform.position += offset; // recalculeaza pozitia la fiecare frame;
 

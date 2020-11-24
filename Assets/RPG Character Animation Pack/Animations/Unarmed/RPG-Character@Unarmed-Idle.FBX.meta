@@ -734,16 +734,16 @@ ModelImporter:
       name: Unarmed-Idle
       takeName: Take 001
       internalID: 0
-      firstFrame: 9.8
-      lastFrame: 20.7
+      firstFrame: 1.1
+      lastFrame: 42
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
-      cycleOffset: 0
+      cycleOffset: 20
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 1
+      loopTime: 0
+      loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 1

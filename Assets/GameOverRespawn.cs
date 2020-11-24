@@ -29,13 +29,14 @@ public class GameOverRespawn : MonoBehaviour
 
         if (stateInfo.IsTag("die"))
         {
-            audio2.Stop();
-            audio1.Play();
+            //audio2.Stop();
+            //audio1.Play();
             menuContainer.SetActive(true);
             transform.position = initialPos;
+            animator.Play("Revive");
         }
-        else
-            menuContainer.SetActive(false);
+        //else
+           // menuContainer.SetActive(false);
             
     }
 

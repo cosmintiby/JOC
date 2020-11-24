@@ -51,7 +51,10 @@ public class OpponentCtrl : MonoBehaviour
     {
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsTag("die"))
+        {
             agent.SetDestination(transform.position);
+            
+        }
         else
             agent.SetDestination(player.position + destinationOffset);
         
@@ -59,15 +62,17 @@ public class OpponentCtrl : MonoBehaviour
         
 
         Vector3 characterSpaceDir = transform.InverseTransformDirection(agent.velocity);
+        if (Vector3.Distance(transform.position, player.position) > runningDistanceThresh) //oponentul alearga la distanta mai mare decat cea declarata public in inspector
+            characterSpaceDir *= .5f;
+
         animator.SetFloat("Forward", characterSpaceDir.z, 0.1f, Time.deltaTime);
         animator.SetFloat("Right", characterSpaceDir.x, 0.1f, Time.deltaTime);
 
         attackDistanceThresh = (Mathf.Sin(Time.time + phase) + 1f) * 0.5f + 0.5f;
+        
         if (Vector3.Distance(transform.position, player.position) < attackDistanceThresh) //oponentul ataca la distanta mai mica decat cea declarata public in inspector
             animator.SetTrigger("Attack");
 
-        if (Vector3.Distance(transform.position, player.position) > runningDistanceThresh) //oponentul alearga la distanta mai mare decat cea declarata public in inspector
-            animator.SetTrigger("Running");
 
     }
     private void LateUpdate()
