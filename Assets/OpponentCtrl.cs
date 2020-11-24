@@ -50,10 +50,10 @@ public class OpponentCtrl : MonoBehaviour
     void Update()
     {
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName("Die"))
+        if (stateInfo.IsTag("die"))
             agent.SetDestination(transform.position);
         else
-             agent.SetDestination(player.position + destinationOffset);
+            agent.SetDestination(player.position + destinationOffset);
         
         
         
@@ -72,6 +72,7 @@ public class OpponentCtrl : MonoBehaviour
     }
     private void LateUpdate()
     {
+        //stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsTag("die"))
             return;
          

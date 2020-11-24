@@ -27,7 +27,6 @@ public class MovePlayer : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>(); // initializam animatorul atasat playerului
-        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         initialPos = transform.position;
         rigidbody = GetComponent<Rigidbody>(); // initializam corpul rigid atasat playerului
         capsule = GetComponent<CapsuleCollider>();
@@ -39,6 +38,7 @@ public class MovePlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         GetMovementDirection();
         
         UpdateAnimatorParameters();
@@ -52,7 +52,7 @@ public class MovePlayer : MonoBehaviour
 
         HandleAttack();
 
-        ApplySpeed();
+        //ApplySpeed();
        
     }
 
@@ -65,13 +65,13 @@ public class MovePlayer : MonoBehaviour
             animator.SetTrigger("Attack");
         }
       
-       if (stateInfo.IsName("Grounded"))
+       if (stateInfo.IsTag("grounded"))
         {
             if (enemy != null)
             {
                float dist = Vector3.Distance(enemy.position, transform.position);
                 float guardWeight = .2f - (Mathf.Clamp(dist, 2f, 12f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
-                animator.SetLayerWeight(1, guardWeight);
+                animator.SetLayerWeight(1, Mathf.Pow(guardWeight, .1f));
             }
             else
                 animator.SetLayerWeight(1, 0f);
@@ -125,14 +125,16 @@ public class MovePlayer : MonoBehaviour
     private void UpdateAnimatorParameters()
     {
         Vector3 characterSpaceDir = transform.InverseTransformDirection(moveDir);
+       // if (Input.GetKey(KeyCode.LeftShift))
+         //   characterSpaceDir *= .5f;
         animator.SetFloat("Forward", characterSpaceDir.z, 0.1f, Time.deltaTime);
         animator.SetFloat("Right", characterSpaceDir.x, 0.1f, Time.deltaTime);
 
     }
     private void ApplyRootRotation()
     {
-        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (animator.GetBool("Midair") || stateInfo.IsTag("attack") || stateInfo.IsName("Die"))
+        //stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsTag("attack") || stateInfo.IsTag("die"))
           return;
         
         
@@ -193,8 +195,8 @@ public class MovePlayer : MonoBehaviour
     private void ApplyRootMotion()
     {
        
-       stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-       if (animator.GetBool("Midair") || stateInfo.IsTag("attack") || stateInfo.IsName("Die"))
+       //stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+       if (stateInfo.IsTag("attack") || stateInfo.IsTag("die"))
             return;
 
 
