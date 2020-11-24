@@ -18,6 +18,7 @@ public class OpponentCtrl : MonoBehaviour
     {
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         animator = GetComponent<Animator>();
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         StartCoroutine(SeedMoveDirection(1f));
         phase = UnityEngine.Random.Range(0f, Mathf.PI * 5f);
     }
@@ -71,7 +72,7 @@ public class OpponentCtrl : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if (stateInfo.IsName("Die"))
+        if (stateInfo.IsTag("die"))
             return;
          
             Vector3 D = (player.position - transform.position);

@@ -10,25 +10,27 @@ public class MovePlayer : MonoBehaviour
     public float jumpPower = 4f; // puterea sariturii
     public float groundedTreshold = 0.1f;
     public float minY = -20f;
+    public GameObject menuContainer;
     public Transform cameraTransform;
+    Vector3 initialPos;
     Rigidbody rigidbody;
     Vector3 moveDir;
     Animator animator;
     AnimatorStateInfo stateInfo;
     CapsuleCollider capsule;
-    Vector3 initialPos;
 
     Transform enemy;
     public Transform enemyContainer;
     List<Transform> enemies;
+
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>(); // initializam corpul rigid atasat playerului
-        capsule = GetComponent<CapsuleCollider>();
         animator = GetComponent<Animator>(); // initializam animatorul atasat playerului
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         initialPos = transform.position;
+        rigidbody = GetComponent<Rigidbody>(); // initializam corpul rigid atasat playerului
+        capsule = GetComponent<CapsuleCollider>();
         enemies = new List<Transform>();
         for (int i = 0; i < enemyContainer.childCount; i++)
             enemies.Add(enemyContainer.GetChild(i));
@@ -51,40 +53,36 @@ public class MovePlayer : MonoBehaviour
         HandleAttack();
 
         ApplySpeed();
-        Respawn();
+       
     }
 
-    private void Respawn()
-    {
-        
-        if (stateInfo.IsName("Die"))
-            transform.position = initialPos;
-           
-    }
 
     private void HandleAttack()
     {
-      // if (stateInfo.IsName("Grounded"))
-        //{
-          //  if (enemy != null)
-            //{
-              //  float dist = Vector3.Distance(enemy.position, transform.position);
-                //float guardWeight = 1f - (Mathf.Clamp(dist, 2f, 4f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
-                //animator.SetLayerWeight(1, guardWeight);
-            //}
-            //else
-       //         animator.SetLayerWeight(1, 0f);
-        //}
-        //else
-        //{
-          //  animator.SetLayerWeight(1, 0f);
-        //}
-        
-             
         if (Input.GetButtonDown("Fire1"))
         {
+            animator.SetLayerWeight(1, 0f);
             animator.SetTrigger("Attack");
         }
+      
+       if (stateInfo.IsName("Grounded"))
+        {
+            if (enemy != null)
+            {
+               float dist = Vector3.Distance(enemy.position, transform.position);
+                float guardWeight = .2f - (Mathf.Clamp(dist, 2f, 12f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
+                animator.SetLayerWeight(1, guardWeight);
+            }
+            else
+                animator.SetLayerWeight(1, 0f);
+        }
+        else
+        {
+            animator.SetLayerWeight(1, 0f);
+        }
+        
+        
+             
         
     }
     private void HandleMidair()
@@ -113,7 +111,7 @@ public class MovePlayer : MonoBehaviour
             animator.SetBool("Midair", false);
             if (Input.GetButtonDown("Jump"))
             {
-                Vector3 jumpForce = (Vector3.up + moveDir) * jumpPower;
+                Vector3 JumpForce = (Vector3.up + moveDir) * jumpPower;
                 rigidbody.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
             }
         }
@@ -123,6 +121,7 @@ public class MovePlayer : MonoBehaviour
             transform.position = initialPos;
         }
     }
+    
     private void UpdateAnimatorParameters()
     {
         Vector3 characterSpaceDir = transform.InverseTransformDirection(moveDir);
@@ -132,9 +131,9 @@ public class MovePlayer : MonoBehaviour
     }
     private void ApplyRootRotation()
     {
-        
-        if(animator.GetBool("Midair") || stateInfo.IsTag("attack") || stateInfo.IsTag("Die"))
-             return;
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (animator.GetBool("Midair") || stateInfo.IsTag("attack") || stateInfo.IsName("Die"))
+          return;
         
         
         Vector3 F = transform.forward;
@@ -184,6 +183,7 @@ public class MovePlayer : MonoBehaviour
         return D;
 
     }
+   
     private void ApplyRootRotation2()
     {
         Quaternion lookAtDir = Quaternion.LookRotation(moveDir);
@@ -193,9 +193,9 @@ public class MovePlayer : MonoBehaviour
     private void ApplyRootMotion()
     {
        
-       // var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        //if (animator.GetBool("Midair") || stateInfo.IsTag("attack"))
-          //      return;
+       stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+       if (animator.GetBool("Midair") || stateInfo.IsTag("attack") || stateInfo.IsName("Die"))
+            return;
 
 
         ApplySpeed();
