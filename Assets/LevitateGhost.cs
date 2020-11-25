@@ -19,7 +19,8 @@ public class LevitateGhost : MonoBehaviour
     void Update()
     {
         transform.position = new Vector3(transform.position.x, 
-            initialY + Mathf.Sin(Time.time * freq) * amplitude, 
+            initialY + (Mathf.Sin(3f * (Time.time * freq)) + Mathf.Pow(freq, 2f)) * amplitude, 
             transform.position.z);
+        Destroy(gameObject, 3f);
     }
 }

@@ -20,5 +20,6 @@ public class obstacol : MonoBehaviour
         transform.position = new Vector3(transform.position.x,
             initialY + Mathf.Sin(Time.time * freq) * amplitude,
             transform.position.z);
+        
     }
 }
