@@ -16,8 +16,10 @@ public class TakeBhvr : StateMachineBehaviour
             animator.transform.GetComponent<AudioSource>().Play();
         if (HP <= 0)
         {
-            animator.SetTrigger("Die");
             
+            animator.SetTrigger("Die");
+
+
         }
     }
 

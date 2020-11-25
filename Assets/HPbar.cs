@@ -17,6 +17,6 @@ public class HPbar : MonoBehaviour
     {
         if(playerAnimator.GetInteger("HP") > 0f)
           transform.localScale = new Vector3((float)playerAnimator.GetInteger("HP") / 100f, 1, 1f);
-
+        
     }
 }

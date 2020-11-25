@@ -9,6 +9,9 @@ public class CameraCtrl : MonoBehaviour
     public float distanceToTarget = 4f;
     public float minPitch = -50f;
     public float maxPitch = 50f;
+
+    public Vector3 cameraOffset, aimingCameraOffset;
+    public Animator characterAnimator;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +31,17 @@ public class CameraCtrl : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
 
-        transform.position = player.position - transform.forward * distanceToTarget;
+        Vector3 camOffset = transform.TransformDirection(cameraOffset);
+
+        if (characterAnimator.GetBool("aiming"))
+        {
+            camOffset = transform.TransformDirection(aimingCameraOffset);
+        }
+        else 
+        {
+            
+            camOffset = transform.TransformDirection(cameraOffset);
+        }
+        transform.position = player.position - transform.forward * distanceToTarget + camOffset;
     }
 }

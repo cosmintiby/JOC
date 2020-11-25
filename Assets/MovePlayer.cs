@@ -167,6 +167,11 @@ public class MovePlayer : MonoBehaviour
         Vector3 FminusD = F - D;
         Vector3 FplusD = F + D;
 
+        if (animator.GetBool("aiming")) // orienteaza pers cu fata in directia de privire a camerei daca tinteste
+        {
+            D = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
+        }
+
         if (FminusD.magnitude > 0.0001f && FplusD.magnitude > 0.001f)
         {
             float u = Mathf.Acos(Vector3.Dot(F, D));//alfam unghiul in radiani

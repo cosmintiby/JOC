@@ -8,8 +8,9 @@ public class GameOverRespawn : MonoBehaviour
     Animator animator;
     AnimatorStateInfo stateInfo;
     public GameObject menuContainer;
+    public GameObject hpContainer;
     public AudioSource audio1;
-    public AudioSource audio2;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -29,15 +30,29 @@ public class GameOverRespawn : MonoBehaviour
 
         if (stateInfo.IsTag("die"))
         {
-            //audio2.Stop();
-            //audio1.Play();
+            
+           
             menuContainer.SetActive(true);
             transform.position = initialPos;
+            
+                if(menuContainer)
+                    audio1.Play();
+                
+            Time.timeScale = 0f;
             animator.Play("Revive");
+
         }
-        //else
-           // menuContainer.SetActive(false);
+
+        if (stateInfo.IsName("Revive"))
+        {
+            hpContainer.SetActive(false);
+            animator.SetInteger("HP", 100);
+        }
+        else
+            hpContainer.SetActive(true);
+
             
     }
-
+    
+    
 }
