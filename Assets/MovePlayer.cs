@@ -126,7 +126,7 @@ public class MovePlayer : MonoBehaviour
     {
         Vector3 characterSpaceDir = transform.InverseTransformDirection(moveDir);
        if (Input.GetKey(KeyCode.LeftShift))
-           characterSpaceDir *= .5f;
+            characterSpaceDir *= .5f;
         animator.SetFloat("Forward", characterSpaceDir.z, 0.1f, Time.deltaTime);
         animator.SetFloat("Right", characterSpaceDir.x, 0.1f, Time.deltaTime);
 
@@ -175,9 +175,11 @@ public class MovePlayer : MonoBehaviour
 
         }
 
-        if (closestEnemyIndex != -1)
+        if (closestEnemyIndex != -1)        //schimba targetul pe inamic pe cel mai aproape de jucator
         {
-            enemy = enemies[closestEnemyIndex];
+            if(!stateInfo.IsTag("attack"))
+                enemy = enemies[closestEnemyIndex];
+
             D = enemy.position - transform.position;
             D.y = 0f;
             D = D.normalized;

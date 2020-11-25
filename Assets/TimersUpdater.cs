@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HPbar : MonoBehaviour
+public class TimersUpdater : MonoBehaviour
 {
-    public Animator playerAnimator;
-    
+    Animator animator;
     // Start is called before the first frame update
     void Start()
     {
-        
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(playerAnimator.GetInteger("HP") > 0f)
-          transform.localScale = new Vector3((float)playerAnimator.GetInteger("HP") / 100f, 1, 1f);
-
+        animator.SetFloat("timeSinceTakenHit", 
+        animator.GetFloat("timeSinceTakenHit") + Time.deltaTime);
     }
 }

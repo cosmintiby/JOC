@@ -6,6 +6,7 @@ public class OpponentCtrl : MonoBehaviour
 {
     UnityEngine.AI.NavMeshAgent agent;
     Animator animator;
+    public Animator playerAnimator;
     public Transform player;
     public float attackDistanceThresh = 1.5f;
     public float runningDistanceThresh = 5f;
@@ -65,21 +66,24 @@ public class OpponentCtrl : MonoBehaviour
         if (Vector3.Distance(transform.position, player.position) > runningDistanceThresh) //oponentul alearga la distanta mai mare decat cea declarata public in inspector
             characterSpaceDir *= .5f;
 
-        animator.SetFloat("Forward", characterSpaceDir.z, 0.1f, Time.deltaTime);
-        animator.SetFloat("Right", characterSpaceDir.x, 0.1f, Time.deltaTime);
+              animator.SetFloat("Forward", characterSpaceDir.z, 0.1f, Time.deltaTime);
+              animator.SetFloat("Right", characterSpaceDir.x, 0.1f, Time.deltaTime);
 
-        attackDistanceThresh = (Mathf.Sin(Time.time + phase) + 1f) * 0.5f + 0.5f;
+              attackDistanceThresh = (Mathf.Sin(Time.time + phase) + 1f) * 0.5f + 0.5f;
+
+        if (playerAnimator.GetInteger("HP") > 0f)
+        {
+            if (Vector3.Distance(transform.position, player.position) < attackDistanceThresh) //oponentul ataca la distanta mai mica decat cea declarata public in inspector
+                animator.SetTrigger("Attack");
+        }
         
-        if (Vector3.Distance(transform.position, player.position) < attackDistanceThresh) //oponentul ataca la distanta mai mica decat cea declarata public in inspector
-            animator.SetTrigger("Attack");
-
-
     }
     private void LateUpdate()
     {
         //stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsTag("die"))
-            return;
+      
+        if (animator.GetInteger("HP") <= 0f)
+        return;
          
             Vector3 D = (player.position - transform.position);
         D.y = 0f;

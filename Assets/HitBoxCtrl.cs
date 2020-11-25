@@ -14,16 +14,21 @@ public class HitBoxCtrl : MonoBehaviour
       
         if (other.gameObject.layer == LayerMask.NameToLayer(opponentHurtBox))
         {
-            //animator.Play("TakeHitR");
-            animator.SetInteger("TakenDamage", damage);
+            if (animator.GetInteger("HP") > 0f)
+            {
 
-            if (GameObject.FindGameObjectWithTag("HitBoxL"))
-                animator.SetTrigger("TakenHitRight");
-            
+                if (animator.GetFloat("timeSinceTakenHit") > 0.3f)
+            {
+                //animator.Play("TakeHitR");
+                animator.SetInteger("TakenDamage", damage);
 
-            if (GameObject.FindGameObjectWithTag("HitBoxR"))
-                animator.SetTrigger("TakenHitLeft");
-            
+                if (GameObject.FindGameObjectWithTag("HitBoxL"))
+                    animator.SetTrigger("TakenHitRight");
+
+
+                if (GameObject.FindGameObjectWithTag("HitBoxR"))
+                    animator.SetTrigger("TakenHitLeft");
+            }
 
 
 
@@ -32,6 +37,7 @@ public class HitBoxCtrl : MonoBehaviour
 
           // if (animator.GetBool("TakenHitRight"))
             //    animator.Play("TakeHitR");
+            }
 
         }
 

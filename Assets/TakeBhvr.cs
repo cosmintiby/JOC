@@ -7,12 +7,14 @@ public class TakeBhvr : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        animator.SetFloat("timeSinceTakenHit", 0f);
+
         int HP = animator.GetInteger("HP");
         HP -= animator.GetInteger("TakenDamage");
         animator.SetInteger("HP", HP);
 
             animator.transform.GetComponent<AudioSource>().Play();
-        if (HP < 0)
+        if (HP <= 0)
         {
             animator.SetTrigger("Die");
             
