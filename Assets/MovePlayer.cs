@@ -12,6 +12,8 @@ public class MovePlayer : MonoBehaviour
     public float minY = -20f;
     public GameObject menuContainer;
     public Transform cameraTransform;
+    public Transform sword;
+    public Transform backSword;
     Vector3 initialPos;
     Rigidbody rigidbody;
     Vector3 moveDir;
@@ -23,6 +25,7 @@ public class MovePlayer : MonoBehaviour
     public Transform enemyContainer;
     List<Transform> enemies;
 
+    Transform rightHand;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +36,7 @@ public class MovePlayer : MonoBehaviour
         enemies = new List<Transform>();
         for (int i = 0; i < enemyContainer.childCount; i++)
             enemies.Add(enemyContainer.GetChild(i));
+        rightHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
     }
 
     // Update is called once per frame
@@ -52,11 +56,31 @@ public class MovePlayer : MonoBehaviour
 
         HandleAttack();
 
+        HandleSwordBehaviour();
+
+
         //ApplySpeed();
        
     }
 
-
+    private void HandleSwordBehaviour()
+    {
+        if(Input.GetButton("Fire2"))
+        {
+            animator.SetBool("aiming", true);
+            animator.SetLayerWeight(1, 1f);
+            sword.gameObject.SetActive(true);
+            sword.position = rightHand.position;
+            sword.rotation = rightHand.rotation;
+            backSword.gameObject.SetActive(false);
+        }
+        else
+        {
+            animator.SetBool("aiming", false);
+            sword.gameObject.SetActive(false);
+            backSword.gameObject.SetActive(true);
+        } 
+    }
     private void HandleAttack()
     {
         if (Input.GetButtonDown("Fire1"))
