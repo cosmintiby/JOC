@@ -8,7 +8,7 @@ public class LevitateGhost : MonoBehaviour
     float initialY;
     public float freq = 1f;
     public float amplitude = 0.25f;
-
+    public AudioSource audio;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,5 +22,8 @@ public class LevitateGhost : MonoBehaviour
             initialY + (Mathf.Sin(3f * (Time.time * freq)) + Mathf.Pow(freq, 2f)) * amplitude, 
             transform.position.z);
         Destroy(gameObject, 3f);
+        audio.Play();
+        
+
     }
 }
