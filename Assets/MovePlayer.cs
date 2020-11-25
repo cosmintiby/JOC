@@ -247,7 +247,8 @@ public class MovePlayer : MonoBehaviour
         float velY = rigidbody.velocity.y;
 
         Vector3 fidelityDir = animator.deltaPosition.magnitude * moveDir.normalized;
-        rigidbody.velocity += fidelityDir  / Time.deltaTime;
+        if(Time.deltaTime > 0f)
+            rigidbody.velocity += fidelityDir  /  Time.deltaTime;
 
 
         rigidbody.velocity = new Vector3(rigidbody.velocity.x, velY, rigidbody.velocity.z); // se pastreaza componenta verticala;

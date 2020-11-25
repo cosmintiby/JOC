@@ -25,7 +25,8 @@ public class AudioDie : MonoBehaviour
         if (animator.GetBool("Die"))
         {
             audio1.Play();
-            ghost.SetActive(true);
+            if(ghost)
+                ghost.SetActive(true);
         }
     }
 }

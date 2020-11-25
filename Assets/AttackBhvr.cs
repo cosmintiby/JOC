@@ -5,6 +5,7 @@ using UnityEngine;
 public class AttackBhvr : StateMachineBehaviour
 {
     public HumanBodyBones bone;
+    
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     public float minT;
     public float maxT;
@@ -20,17 +21,27 @@ public class AttackBhvr : StateMachineBehaviour
         if (t > minT && t < maxT)
         {
             animator.GetBoneTransform(bone).GetComponent<SphereCollider>().enabled = true;
+            var sword = animator.GetBoneTransform(bone).GetComponentInChildren<BoxCollider>();
+            if (sword)
+                sword.enabled = true;
         }
         else
         {
             animator.GetBoneTransform(bone).GetComponent<SphereCollider>().enabled = false;
+            var sword = animator.GetBoneTransform(bone).GetComponentInChildren<BoxCollider>();
+            if (sword)
+                sword.enabled = false;
+
         }
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       animator.GetBoneTransform(bone).GetComponent<SphereCollider>().enabled = false; 
+       animator.GetBoneTransform(bone).GetComponent<SphereCollider>().enabled = false;
+        var sword = animator.GetBoneTransform(bone).GetComponentInChildren<BoxCollider>();
+        if (sword)
+            sword.enabled = false;
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
