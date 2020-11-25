@@ -13,6 +13,7 @@ public class OpponentCtrl : MonoBehaviour
     Vector3 destinationOffset;
     float phase;
     AnimatorStateInfo stateInfo;
+    CapsuleCollider capsule;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +23,7 @@ public class OpponentCtrl : MonoBehaviour
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         StartCoroutine(SeedMoveDirection(1f));
         phase = UnityEngine.Random.Range(0f, Mathf.PI * 5f);
+        capsule = GetComponent<CapsuleCollider>();
     }
 
     IEnumerator SeedMoveDirection(float t)
@@ -52,7 +54,7 @@ public class OpponentCtrl : MonoBehaviour
     {
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsTag("die"))
-        {
+        {   capsule.enabled = false;
             agent.SetDestination(transform.position);
             
         }
