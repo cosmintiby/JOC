@@ -12,15 +12,21 @@ public class CameraCtrl : MonoBehaviour
 
     public Vector3 cameraOffset, aimingCameraOffset;
     public Animator characterAnimator;
+    Quaternion initRot;
+    Vector3 initPos;
     // Start is called before the first frame update
     void Start()
     {
-        
+        initRot = transform.rotation;
+        Vector3 euler = initRot.eulerAngles;
+        pitch = euler.x;
+        yaw = euler.y;
     }
 
     // Update is called once per frame
     void LateUpdate() // se apeleaza dupa ce update s-a apelat pe toate obiectele
     {
+       
         float dx = Input.GetAxis("Mouse X");
         float dy = Input.GetAxis("Mouse Y");
 

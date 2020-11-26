@@ -17,7 +17,7 @@ public class Destructibles : MonoBehaviour
             
           if (other.gameObject.layer == LayerMask.NameToLayer(box))
           {
-            ScoreScript.scoreValue += 10;
+            ScoreScript.scoreValue += 1;
             Instantiate(destroyedversion, transform.position, transform.rotation);
             Destroy(gameObject);
             audio.Play();

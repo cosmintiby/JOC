@@ -14,11 +14,13 @@ public class MovePlayer : MonoBehaviour
     public Transform cameraTransform;
     public Transform sword;
     public Transform backSword;
+    //public Animator oppanimator;
     Vector3 initialPos;
     Rigidbody rigidbody;
     Vector3 moveDir;
     Animator animator;
     AnimatorStateInfo stateInfo;
+    //AnimatorStateInfo oppstateInfo;
     CapsuleCollider capsule;
 
     Transform enemy;
@@ -42,6 +44,7 @@ public class MovePlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //oppstateInfo = oppanimator.GetCurrentAnimatorStateInfo(0);
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         GetMovementDirection();
         
@@ -59,7 +62,7 @@ public class MovePlayer : MonoBehaviour
         HandleSwordBehaviour();
 
 
-        //ApplySpeed();
+        
        
     }
 
@@ -68,6 +71,15 @@ public class MovePlayer : MonoBehaviour
         if(Input.GetButton("Fire2"))
         {
             animator.SetBool("aiming", true);
+            if (animator.GetBool("aiming"))
+            {
+                if (Input.GetButtonDown("Fire1"))
+                {
+                  animator.SetTrigger("AttackSword");
+                    
+                }
+                
+            }
             animator.SetLayerWeight(1, 1f);
             sword.gameObject.SetActive(true);
             sword.position = rightHand.position;
@@ -91,14 +103,18 @@ public class MovePlayer : MonoBehaviour
       
        if (stateInfo.IsTag("grounded"))
         {
-            if (enemy != null)
-            {
-               float dist = Vector3.Distance(enemy.position, transform.position);
-                float guardWeight = .2f - (Mathf.Clamp(dist, 2f, 12f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
-                animator.SetLayerWeight(1, Mathf.Pow(guardWeight, .1f));
-            }
-            else
-                animator.SetLayerWeight(1, 0f);
+                  if (enemy != null)
+                {
+                   // if (!oppstateInfo.IsTag("die"))
+                    //{
+                    float dist = Vector3.Distance(enemy.position, transform.position);
+                    float guardWeight = .2f - (Mathf.Clamp(dist, 2f, 12f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
+                    animator.SetLayerWeight(1, Mathf.Pow(guardWeight, .1f));
+                    //}
+                }
+                 else
+                    animator.SetLayerWeight(1, 0f);
+            
         }
         else
         {
@@ -157,7 +173,7 @@ public class MovePlayer : MonoBehaviour
     }
     private void ApplyRootRotation()
     {
-        //stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        
         if (stateInfo.IsTag("attack") || stateInfo.IsTag("die"))
           return;
         
@@ -191,17 +207,19 @@ public class MovePlayer : MonoBehaviour
         Vector3 D = moveDir;
         float minDist = float.MaxValue;
         int closestEnemyIndex = -1;
-
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            float dist = Vector3.Distance(transform.position, enemies[i].position);
-            if (dist < 2f && dist < minDist)
+        if(!stateInfo.IsTag("die"))
+        { 
+            for (int i = 0; i < enemies.Count; i++)
             {
+            float dist = Vector3.Distance(transform.position, enemies[i].position);
+                if (dist < 2f && dist < minDist)
+                {
                 minDist = dist;
                 closestEnemyIndex = i;
 
-            }
+                }
 
+            }
         }
 
         if (closestEnemyIndex != -1)        //schimba targetul pe inamic pe cel mai aproape de jucator
@@ -226,7 +244,7 @@ public class MovePlayer : MonoBehaviour
     private void ApplyRootMotion()
     {
        
-       //stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+       
        if (stateInfo.IsTag("attack") || stateInfo.IsTag("die"))
             return;
 

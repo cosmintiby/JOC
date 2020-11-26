@@ -23,7 +23,5 @@ public class LevitateGhost : MonoBehaviour
             transform.position.z);
         Destroy(gameObject, 3f);
         audio.Play();
-        
-
     }
 }

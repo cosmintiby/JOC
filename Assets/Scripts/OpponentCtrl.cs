@@ -82,7 +82,7 @@ public class OpponentCtrl : MonoBehaviour
     }
     private void LateUpdate()
     {
-        //stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        
       
         if (animator.GetInteger("HP") <= 0f)
         return;
