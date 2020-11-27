@@ -19,7 +19,7 @@ public class HitBoxCtrl : MonoBehaviour
 
                 if (animator.GetFloat("timeSinceTakenHit") > 0.3f)
             {
-                //animator.Play("TakeHitR");
+                
                 animator.SetInteger("TakenDamage", damage);
 
                 if (GameObject.FindGameObjectWithTag("HitBoxL"))
@@ -30,13 +30,6 @@ public class HitBoxCtrl : MonoBehaviour
                     animator.SetTrigger("TakenHitLeft");
             }
 
-
-
-           // if (animator.GetBool("TakenHitLeft"))
-            //    animator.Play("TakeHitL");
-
-          // if (animator.GetBool("TakenHitRight"))
-            //    animator.Play("TakeHitR");
             }
 
         }

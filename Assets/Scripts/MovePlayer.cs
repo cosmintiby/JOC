@@ -14,8 +14,6 @@ public class MovePlayer : MonoBehaviour
     public Transform cameraTransform;
     public Transform sword;
     public Transform backSword;
-    //public Animator oppanimator;
-    //AnimatorStateInfo oppstateInfo;
     Vector3 initialPos;
     Rigidbody rigidbody;
     Vector3 moveDir;
@@ -44,7 +42,7 @@ public class MovePlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //oppstateInfo = oppanimator.GetCurrentAnimatorStateInfo(0);
+        
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         GetMovementDirection();
         
@@ -105,12 +103,11 @@ public class MovePlayer : MonoBehaviour
         {
                   if (enemy != null)
                 {
-                   // if (!oppstateInfo.IsTag("die"))
-                    //{
+                   
                     float dist = Vector3.Distance(enemy.position, transform.position);
-                    float guardWeight = .2f - (Mathf.Clamp(dist, 2f, 12f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 4f ramane 4;
+                    float guardWeight = .2f - (Mathf.Clamp(dist, 2f, 12f) - 2f) / 2; //daca e mic de 2f ramane 2, daca e mai mare de 12f ramane 12;
                     animator.SetLayerWeight(1, Mathf.Pow(guardWeight, .1f));
-                    //}
+                    
                 }
                  else
                     animator.SetLayerWeight(1, 0f);
@@ -212,18 +209,18 @@ public class MovePlayer : MonoBehaviour
         { 
             for (int i = 0; i < enemies.Count; i++)
             {
-            float dist = Vector3.Distance(transform.position, enemies[i].position);
-                if (dist < 2f && dist < minDist)
+               float dist = Vector3.Distance(transform.position, enemies[i].position);
+                if (dist < 2f && dist < minDist && !enemies[i].GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Die"))
                 {
-                minDist = dist;
-                closestEnemyIndex = i;
+                    minDist = dist;
+                    closestEnemyIndex = i;
 
                 }
 
             }
         }
 
-        if (closestEnemyIndex != -1)        //schimba targetul pe inamic pe cel mai aproape de jucator
+        if (closestEnemyIndex != -1)        //schimba targetul de inamic pe cel mai aproape de jucator
         {
             if(!stateInfo.IsTag("attack"))
                 enemy = enemies[closestEnemyIndex];

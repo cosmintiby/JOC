@@ -45,6 +45,7 @@ public class GameOverRespawn : MonoBehaviour
 
         if (stateInfo.IsName("Revive"))
         {
+            
             hpContainer.SetActive(false);
             animator.SetInteger("HP", 100);
             animator.SetBool("Alive", true);
