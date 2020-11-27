@@ -8,6 +8,7 @@ public class OpenCrate : MonoBehaviour
     public string box;
     public AudioSource audio;
     public ParticleSystem particle;
+    public GameObject easterEgg;
     
     
 
@@ -21,8 +22,10 @@ public class OpenCrate : MonoBehaviour
             GetComponent<Animator>().SetBool("open", true);
             audio.Play();
             Instantiate(particle, transform.position, transform.rotation);
-         
+            easterEgg.SetActive(true);
+            Destroy(easterEgg, 2f);
         }
+       
         
 
     }

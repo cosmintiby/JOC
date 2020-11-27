@@ -15,12 +15,12 @@ public class MovePlayer : MonoBehaviour
     public Transform sword;
     public Transform backSword;
     //public Animator oppanimator;
+    //AnimatorStateInfo oppstateInfo;
     Vector3 initialPos;
     Rigidbody rigidbody;
     Vector3 moveDir;
     Animator animator;
     AnimatorStateInfo stateInfo;
-    //AnimatorStateInfo oppstateInfo;
     CapsuleCollider capsule;
 
     Transform enemy;
@@ -207,6 +207,7 @@ public class MovePlayer : MonoBehaviour
         Vector3 D = moveDir;
         float minDist = float.MaxValue;
         int closestEnemyIndex = -1;
+
         if(!stateInfo.IsTag("die"))
         { 
             for (int i = 0; i < enemies.Count; i++)

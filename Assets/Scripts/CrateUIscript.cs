@@ -19,15 +19,15 @@ public class CrateUIscript : MonoBehaviour
     void Update()
     {
        
-        if (ScoreScript.scoreValue == 10)
+        if (ScoreScript.scoreValue >= 1)
         {
             crate1.SetActive(true);
         }
-        if (ScoreScript.scoreValue == 20)
+        if (ScoreScript.scoreValue >= 2)
         {
             crate2.SetActive(true);
         }
-        if (ScoreScript.scoreValue == 30)
+        if (ScoreScript.scoreValue >= 3)
         {
 
             crate3.SetActive(true);
